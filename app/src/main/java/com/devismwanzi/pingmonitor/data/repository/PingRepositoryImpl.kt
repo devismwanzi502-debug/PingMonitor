@@ -1,9 +1,7 @@
 package com.devismwanzi.pingmonitor.data.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
-import com.devismwanzi.pingmonitor.data.db.PingDao
-import com.devismwanzi.pingmonitor.data.db.PingEntity
+import com.devismwanzi.pingmonitor.data.local.dao.PingDao
+import com.devismwanzi.pingmonitor.data.local.entity.PingEntity
 import com.devismwanzi.pingmonitor.domain.model.NetworkStats
 import com.devismwanzi.pingmonitor.domain.model.PingResult
 import com.devismwanzi.pingmonitor.domain.repository.PingRepository
@@ -12,81 +10,68 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PingRepositoryImpl @Inject constructor(
-    private val pingDao: PingDao
+    private val dao: PingDao
 ) : PingRepository {
 
-    override suspend fun recordPing(pingResult: PingResult) {
-        val entity = PingEntity(
-            host = pingResult.host,
-            latencyMs = pingResult.latencyMs,
-            packetLoss = pingResult.packetLoss,
-            timestamp = pingResult.timestamp,
-            isSuccessful = pingResult.isSuccessful,
-            errorMessage = pingResult.errorMessage
+    override suspend fun recordPing(ping: PingResult) {
+        dao.insertPing(
+            PingEntity(
+                host = ping.host,
+                latencyMs = ping.latencyMs,
+                packetLoss = ping.packetLoss,
+                timestamp = ping.timestamp,
+                errorMessage = ping.errorMessage
+            )
         )
-        pingDao.insertPing(entity)
     }
 
-    override fun getLatestPings(limit: Int): Flow<List<PingResult>> {
-        return pingDao.getLatestPings(limit).map { entities ->
-            entities.map { it.toDomainModel() }
-        }
-    }
-
-    override fun getPingsForHost(host: String, limit: Int): Flow<List<PingResult>> {
-        return pingDao.getPingsForHost(host, limit).map { entities ->
-            entities.map { it.toDomainModel() }
-        }
-    }
-
-    override fun getAllPings(): LiveData<List<PingResult>> {
-        return pingDao.getAllPings().map { entities ->
-            entities.map { it.toDomainModel() }
-        }
-    }
-
-    override suspend fun getNetworkStats(host: String): NetworkStats {
-        val latestPings = pingDao.getPingsForHost(host, limit = 1)
-        var currentPing = 0f
-
-        latestPings.collect { pings ->
-            if (pings.isNotEmpty()) {
-                currentPing = pings[0].latencyMs
+    override fun getAllPings(): Flow<List<PingResult>> {
+        return dao.getAllPings().map { entities ->
+            entities.map {
+                PingResult(
+                    id = it.id,
+                    host = it.host,
+                    latencyMs = it.latencyMs,
+                    packetLoss = it.packetLoss,
+                    timestamp = it.timestamp,
+                    errorMessage = it.errorMessage
+                )
             }
         }
+    }
 
-        val totalPings = pingDao.getPingsForHost(host).collect { pings ->
-            // Stats will be calculated below
+    override fun getNetworkStats(): Flow<NetworkStats> {
+        return dao.getAllPings().map { entities ->
+            if (entities.isEmpty()) {
+                return@map NetworkStats(
+                    currentPing = 0,
+                    minPing = 0,
+                    maxPing = 0,
+                    avgPing = 0,
+                    packetLoss = 0
+                )
+            }
+            
+            // Filter out drops and timeouts for accurate calculations
+            val validLatencies = entities.map { it.latencyMs }.filter { it > 0 }
+            
+            val current = validLatencies.firstOrNull() ?: 0
+            val min = validLatencies.minOrNull() ?: 0
+            val max = validLatencies.maxOrNull() ?: 0
+            val avg = if (validLatencies.isNotEmpty()) validLatencies.average().toInt() else 0
+            
+            // Calculate total packet loss percentile over the logged scope
+            val totalPackets = entities.size
+            val lostPackets = entities.count { it.latencyMs <= 0 || it.errorMessage != null }
+            val lossPercent = if (totalPackets > 0) ((lostPackets.toFloat() / totalPackets) * 100).toInt() else 0
+
+            NetworkStats(
+                currentPing = current,
+                minPing = min,
+                maxPing = max,
+                avgPing = avg,
+                packetLoss = lossPercent
+            )
         }
-
-        return NetworkStats(
-            host = host,
-            currentPing = currentPing,
-            averagePing = pingDao.getAverageLatency(host),
-            minPing = pingDao.getMinLatency(host),
-            maxPing = pingDao.getMaxLatency(host),
-            packetLossPercentage = 0f // Calculate based on failed pings
-        )
-    }
-
-    override suspend fun clearAllData() {
-        pingDao.clearAllData()
-    }
-
-    override suspend fun deleteOldData(daysOld: Int) {
-        val timeMillis = System.currentTimeMillis() - (daysOld * 24 * 60 * 60 * 1000)
-        pingDao.deleteOldData(timeMillis)
-    }
-
-    private fun PingEntity.toDomainModel(): PingResult {
-        return PingResult(
-            id = id,
-            host = host,
-            latencyMs = latencyMs,
-            packetLoss = packetLoss,
-            timestamp = timestamp,
-            isSuccessful = isSuccessful,
-            errorMessage = errorMessage
-        )
     }
 }
