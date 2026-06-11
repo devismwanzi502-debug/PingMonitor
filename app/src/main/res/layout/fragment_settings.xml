@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_settings"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Target Host -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_title_target_host"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/target_host"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/pref_desc_target_host"
+                android:inputType="text"
+                android:text="8.8.8.8" />
+
+        </LinearLayout>
+
+        <!-- Ping Interval -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_title_ping_interval"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/ping_interval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/pref_desc_ping_interval"
+                android:inputType="number"
+                android:text="5" />
+
+        </LinearLayout>
+
+        <!-- Enable Notifications -->
+        <CheckBox
+            android:id="@+id/enable_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pref_title_notifications"
+            android:layout_marginBottom="16dp" />
+
+        <!-- High Latency Alert -->
+        <CheckBox
+            android:id="@+id/high_latency_alert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pref_title_high_latency_alert"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Alert Threshold -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_title_alert_threshold"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/alert_threshold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="100" />
+
+        </LinearLayout>
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/btn_save_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_success"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Clear Data Button -->
+        <Button
+            android:id="@+id/btn_clear_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_clear_data"
+            android:backgroundTint="@color/error" />
+
+    </LinearLayout>
+
+</ScrollView>
