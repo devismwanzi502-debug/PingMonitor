@@ -23,14 +23,12 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      # THIS STEP FIXES THE PERMISSION ISSUE
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      # THIS ACTION DOWNLOADS GRADLE AUTOMATICALLY (NO JAR NEEDED)
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: assembleDebug
+      - name: Build Debug APK
+        run: gradle assembleDebug --stacktrace
 
       - name: Rename APK File
         run: mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/PingMonitorX.apk
