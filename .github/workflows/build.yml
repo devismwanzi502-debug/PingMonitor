@@ -20,15 +20,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Gradle Environment
+    - name: Setup Gradle Global Environment
       uses: gradle/actions/setup-gradle@v3
       with:
-        gradle-version: wrapper # This forces GitHub to automatically resolve and download the correct wrapper assets
-
-    - name: Explicitly Force Gradle Shell Permissions
-      run: |
-        chmod +x gradlew
-        sed -i 's/\r$//' gradlew
+        gradle-version: '8.2' # Installs a full, certified Gradle installation directly onto the runner
 
     - name: Generate Debug Keystore
       run: |
@@ -36,10 +31,4 @@ jobs:
         keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
 
     - name: Assemble Debug APK Binary
-      run: ./gradlew assembleDebug --stacktrace
-
-    - name: Upload Ping Monitor X APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: Ping-Monitor-X-Debug-APK
-        path: app/build/outputs/apk/debug/app-debug.apk
+      run: gradle assembleDebug --stacktrace
