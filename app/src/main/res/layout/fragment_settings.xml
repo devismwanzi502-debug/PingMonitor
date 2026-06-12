@@ -31,7 +31,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/target_host"
+                android:id="@+id/editTextHost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/pref_desc_target_host"
@@ -40,7 +40,7 @@
 
         </LinearLayout>
 
-        <!-- Ping Interval -->
+        <!-- Ping Interval Radio Group -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,15 +51,38 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pref_title_ping_interval"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
 
-            <EditText
-                android:id="@+id/ping_interval"
+            <RadioGroup
+                android:id="@+id/radioGroupInterval"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/pref_desc_ping_interval"
-                android:inputType="number"
-                android:text="5" />
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/radioFast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fast (1 second)"
+                    android:padding="8dp" />
+
+                <RadioButton
+                    android:id="@+id/radioStandard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Standard (2 seconds)"
+                    android:checked="true"
+                    android:padding="8dp" />
+
+                <RadioButton
+                    android:id="@+id/radioSaver"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Battery Saver (5 seconds)"
+                    android:padding="8dp" />
+
+            </RadioGroup>
 
         </LinearLayout>
 
@@ -103,7 +126,7 @@
 
         <!-- Save Button -->
         <Button
-            android:id="@+id/btn_save_settings"
+            android:id="@+id/btnSaveSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/msg_success"
