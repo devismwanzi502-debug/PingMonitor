@@ -10,14 +10,27 @@
         android:layout_height="wrap_content"
         android:text="@string/title_statistics"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
 
-    <!-- TODO: Add statistics visualization -->
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/ping_chart"
+    <!-- No Data Placeholder -->
+    <TextView
+        android:id="@+id/textNoData"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_marginTop="16dp" />
+        android:gravity="center"
+        android:text="@string/msg_no_data"
+        android:textSize="16sp"
+        android:textColor="@color/gray_medium"
+        android:visibility="gone" />
+
+    <!-- Line Chart -->
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="0dp"
+        android:visibility="visible" />
 
     <!-- Stats Cards -->
     <LinearLayout
@@ -30,7 +43,8 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:elevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,7 +56,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_avg_ping"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:textColor="@color/gray_dark" />
 
                 <TextView
                     android:id="@+id/avg_ping"
@@ -60,7 +75,8 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:elevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -72,7 +88,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_min_ping"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:textColor="@color/gray_dark" />
 
                 <TextView
                     android:id="@+id/min_ping"
@@ -90,7 +107,8 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:elevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -102,7 +120,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_max_ping"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:textColor="@color/gray_dark" />
 
                 <TextView
                     android:id="@+id/max_ping"
