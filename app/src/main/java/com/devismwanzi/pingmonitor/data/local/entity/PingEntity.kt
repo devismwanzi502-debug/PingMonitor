@@ -12,4 +12,3 @@ data class PingEntity(
     val timestamp: Long,
     val errorMessage: String?
 )
-
