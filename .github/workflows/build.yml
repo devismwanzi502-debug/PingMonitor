@@ -19,7 +19,11 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
+
+    - name: Setup Gradle Environment
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: wrapper # This forces GitHub to automatically resolve and download the correct wrapper assets
 
     - name: Explicitly Force Gradle Shell Permissions
       run: |
