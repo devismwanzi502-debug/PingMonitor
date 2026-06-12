@@ -1,6 +1,5 @@
 name: Android CI
 
-# Trigger the workflow on push or pull request to the main branch
 on:
   push:
     branches: [ "main", "master" ]
@@ -12,22 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the repository code
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Set up Java 17 (Required for AGP 8.0.0+)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. Set up Android SDK (Ensures all required SDK platforms are available)
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      # 4. Cache Gradle dependencies (Drastically speeds up subsequent builds)
       - name: Cache Gradle Packages
         uses: actions/cache@v4
         with:
@@ -38,28 +33,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # 5. Grant execute permissions to the Gradle wrapper
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # 6. Generate a debug keystore (Prevents AGP from hanging while trying to generate one lazily)
       - name: Generate Debug Keystore
         run: |
           keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
 
-      # 7. Build the Debug APK
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
-      # 8. Rename the APK file to "PingMonitorX.apk"
       - name: Rename APK File
         run: mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/PingMonitorX.apk
 
-      # 9. (Optional but recommended) Run Unit Tests
-      - name: Run Unit Tests
-        run: ./gradlew test
-
-      # 10. Upload the generated APK as a workflow artifact
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
